@@ -38,5 +38,32 @@ module.exports = {
         const devs = await Dev.find();
 
         return res.json(devs);
+    },
+
+    async update(req, res) {
+        const { github_username } = req.params;
+        const { name, bio, techs } = req.body;
+        
+        const techsArray = parseStringAsArray(techs);
+
+        const devUpdate = {
+            name,
+            bio,
+            techs: techsArray
+        }
+
+        const dev  = await Dev.findOneAndUpdate({ github_username }, devUpdate);
+
+        return res.json(dev);
+    },
+
+    async delete(req, res) {
+        const { github_username } = req.params;
+
+        const dev = await Dev.findOne({ github_username });
+
+        await Dev.findOneAndDelete({ github_username });
+
+        return res.json(dev);
     }
 }
